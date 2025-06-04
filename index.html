@@ -69,39 +69,195 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <div id="console-"></div>
+      <button id="console-log">Console Log</button>
+      <button id="console-error">Console Error</button>
+      <button id="console-count">Console Count</button>
+      <button id="console-warn">Console Warn</button>
+      <button id="console-assert">Console Assert</button>
+      <button id="console-clear">Console Clear</button>
+      <button id="console-dir">Console Dir</button>
+      <button id="console-dirxml">Console dirxml</button>
+      <button id="console-group-start">Console Group Start</button>
+      <button id="console-group-end">Console Group End</button>
+      <button id="console-table">Console Table</button>
+      <button id="console-start-timer">Start Timer</button>
+      <button id="console-end-timer">End Timer</button>
+      <button id="console-trace">Console Trace</button>
+      <button id="global-error">Trigger a Global Error</button>
     </section>
   </main>
-
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({
+      token: "4da389b415704b0aaa759709f65e8dad"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+  <script>
+    TrackJS.track('Testing TrackJS!');
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        let output = document.querySelector('output');
+        let firstNum = document.querySelector('#first-num').value;
+        let secondNum = document.querySelector('#second-num').value;
+        let operator = document.querySelector('#operator').value;
+
+        if (!firstNum || !secondNum) {
+          throw new SyntaxError("Missing value(s) for number inputs.");
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (err) {
+        throw (err);
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+
+    let errorDetection = false;
+
+    window.onerror = function (message, source, lineno, colno, error) {
+      if (errorDetection) {
+        console.log("Error Detected: Releasing Neurotoxin.");
+      }
+    };
+
+    let consoleLog = document.querySelector('#console-log');
+    consoleLog.addEventListener("click", () => {
+      console.log("Printing to console.");
+    });
+
+    let consoleError = document.querySelector('#console-error');
+    consoleError.addEventListener("click", () => {
+      console.error("I'm sorry, Dave. I'm afraid I can't do that.");
+    });
+
+    let consoleCount = document.querySelector('#console-count');
+    consoleCount.addEventListener("click", () => {
+      console.count();
+    });
+
+    let consoleWarn = document.querySelector('#console-warn');
+    consoleWarn.addEventListener("click", () => {
+      console.warn("Warning: Entering ecological dead zone. Adding report to databank.")
+    });
+
+
+
+    let consoleAssert = document.querySelector('#console-assert');
+    consoleAssert.addEventListener("click", () => {
+      let firstNum = document.querySelector('#first-num').value;
+      let secondNum = document.querySelector('#second-num').value;
+      console.assert(firstNum < secondNum, "First num is supposed to be less than second Num.");
+    });
+
+    let consoleClear = document.querySelector('#console-clear');
+    consoleClear.addEventListener("click", () => {
+      console.clear();
+    });
+
+    let consoleDir = document.querySelector('#console-dir');
+    consoleDir.addEventListener("click", () => {
+      let output = document.querySelector('output');
+      console.dir(output);
+    });
+
+    let consoleDirXML = document.querySelector('#console-dirxml');
+    consoleDirXML.addEventListener("click", () => {
+      console.dirxml(document);
+    });
+
+    let consoleGroupStart = document.querySelector('#console-group-start');
+    consoleGroupStart.addEventListener("click", () => {
+      console.group("Console Group");
+    });
+
+    let consoleGroupEnd = document.querySelector('#console-group-end');
+    consoleGroupEnd.addEventListener("click", () => {
+      console.groupEnd("Console Group");
+    });
+
+    let consoleTable = document.querySelector('#console-table');
+    class ValidationError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "ValidationError";
+      }
+    }
+    consoleTable.addEventListener("click", () => {
+      var people = [
+        {
+          first: 'René',
+          last: 'Magritte',
+        },
+        {
+          first: 'Chaim',
+          last: 'Soutine',
+          birthday: '18930113',
+        },
+        {
+          first: 'Henri',
+          last: 'Matisse',
+        }
+      ];
+      console.table(people);
+      try {
+        for (let i = 0; i < people.length; i++) {
+          if (!people[i].first) {
+            throw new ValidationError("Incomplete data: no first name");
+          }
+          if (!people[i].last) {
+            throw new ValidationError("Incomplete data: no last name");
+          }
+          if (!people[i].birthday) {
+            throw new ValidationError("Incomplete data: no birthday");
+          }
+        }
+      } catch (err) {
+        if (err instanceof ValidationError) {
+          alert("Invalid data: " + err.message);
+        } else if (err instanceof SyntaxError) {
+          alert("JSON Syntax Error: " + err.message);
+        } else {
+          throw err;
+        }
+      } finally {
+        console.log("Tested people data.");
+      }
+    });
+
+    let consoleStartTimer = document.querySelector('#console-start-timer');
+    consoleStartTimer.addEventListener("click", () => {
+      console.time("Console Timer")
+    });
+
+    let consoleEndTimer = document.querySelector('#console-end-timer');
+    consoleEndTimer.addEventListener("click", () => {
+      console.timeEnd("Console Timer");
+    });
+
+    let consoleTrace = document.querySelector('#console-trace');
+    consoleTrace.addEventListener("click", () => {
+      console.trace();
+    });
+
+    let globalError = document.querySelector('#global-error');
+    globalError.addEventListener("click", () => {
+      errorDetection = true;
+      try {
+        boom();
+      } catch (err) {
+        throw err;
+      }
+    });
+
+
+
   </script>
 </body>
 
